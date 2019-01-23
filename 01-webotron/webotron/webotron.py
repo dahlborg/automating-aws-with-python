@@ -1,5 +1,6 @@
 import boto3
 import click
+from botocore.exceptions import ClientError
 
 session = boto3.Session(profile_name='default')
 s3 = session.resource('s3')
@@ -22,6 +23,57 @@ def list_buckets_objects(bucket):
     for obj in s3.Bucket(bucket).objects.all():
         print(obj)
     pass
+
+@cli.command('setup-bucket')
+@click.argument('bucket')
+def setup_bucket(bucket):
+    "Create and configure s3 bucket"
+    s3bucket = None
+    try:
+        s3bucket = s3.create_bucket(
+            Bucket='bucket',
+            CreateBucketConfiguration={'LocationConstraint': session.region_name }
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
+            s3_bucket = s3.Bucket(bucket)
+        else:
+            raise e
+
+    policy = """
+    {
+        "Version": "2012-10-17",
+        "Id": "Policy1548236922651",
+        "Statement": [
+            {
+                "Sid": "Stmt1548236884919",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::%s/*"
+            }
+        ]
+    }
+    """ % s3bucket.name
+    policy = policy.strip()
+
+    pol = s3bucket.Policy()
+    pol.put(Policy=policy)
+
+    ws = s3bucket.Website()
+
+    ws.put(WebsiteConfiguration={
+        'ErrorDocument': {
+            'Key': 'error.html'
+        },
+        'IndexDocument': {
+            'Suffix': 'string'
+        }
+    })
+
+    return
+
+
 
 if __name__ == '__main__':
     cli()
