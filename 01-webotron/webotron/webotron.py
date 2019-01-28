@@ -14,10 +14,18 @@ Webotron automates the process of deploying static websites to AWS.
 
 import boto3
 import click
-from bucket import BucketManager
+
+from webotron.bucket import BucketManager
+from webotron.domain import DomainManager
+from webotron.certificate import CertificateManager
+from webotron.cdn import DistributionManager
+
+from webotron import util
+
 
 SESSION = None
 BUCKET_MANAGER = None
+
 
 @click.group()
 @click.option('--profile', default=None, help="Use a give AWS profile.")
@@ -31,6 +39,7 @@ def cli(profile):
 
     SESSION = boto3.Session(**session_cfg)
     BUCKET_MANAGER = BucketManager(SESSION)
+
 
 @cli.command('list-buckets')
 def list_buckets():
@@ -62,7 +71,7 @@ def setup_bucket(bucket):
 def sync(pathname, bucket):
     """Sync contents of PATHNAME to bucket."""
     BUCKET_MANAGER.sync(pathname, bucket)
-#    print(bucket_manager.get_bucket_url(bucket_manager.s3.Bucket(bucket)))
+    print(BUCKET_MANAGER.get_bucket_url(BUCKET_MANAGER.s3.Bucket(bucket)))
 
 
 if __name__ == '__main__':
