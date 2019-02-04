@@ -3,7 +3,7 @@ from pathlib import Path
 import click
 import boto3
 
-@click.option('--profile', default=None, help="Use a given AWS profile")
+@click.option('--profile', default='default', help="Use a given AWS profile")
 @click.argument('pathname', type=click.Path(exists=True))
 @click.argument('bucketname')
 @click.command()
