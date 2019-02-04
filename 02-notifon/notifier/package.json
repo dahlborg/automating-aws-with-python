@@ -2,7 +2,9 @@
   "name": "notifon-notifier",
   "description": "",
   "version": "0.1.0",
-  "dependencies": {},
+  "dependencies": {
+    "serverless": "^1.36.3"
+  },
   "devDependencies": {
     "serverless-python-requirements": "^4.1.0"
   }

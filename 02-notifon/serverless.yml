@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: notifon-notifier
+service: notifon-notifier # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -20,10 +20,8 @@ service: notifon-notifier
 provider:
   name: aws
   runtime: python3.7
-  profile: ${file(../config.${self:provider.stage}.json):notifier.profile}
+  profile: &{file(../config.${self:provider.stage}.json):notifier.profile}
   region: eu-west-1
-  environment:
-    SLACK_WEBHOOK_URL: ${file(../config.${self:provider.stage}.json):notifier.slack_webhook_url}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -59,20 +57,8 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  post-to-slack:
-    handler: handler.post_to_slack
-    events:
-      - cloudwatchEvent:
-          event:
-            source:
-              - "aws.autoscaling"
-            detail-type:
-              - "EC2 Instance Launch Successful"
-            detail:
-              AutoScalingGroupName:
-                - "Notifon Example Group"
-
-
+  hello:
+    handler: handler.hello
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -118,6 +104,3 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
-
-plugins:
-  - serverless-python-requirements
