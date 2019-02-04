@@ -1,14 +1,14 @@
 # coding: utf-8
 import boto3
-session = boto3.Session(profile_name='pythonAutomation')
+session = boto3.Session(profile_name='default')
 s3 = session.resource('s3')
-bucket = s3.create_bucket(Bucket='robinvideolyzervideos')
-bucket = s3.create_bucket(Bucket='robinvideolyzervideos', LocationConstraint=session.region_name)
-bucket = s3.create_bucket(Bucket='robinvideolyzervideos')
-bucket = s3.create_bucket(Bucket='robinvideolyzervideos', CreateBucketConfiguration={'LocationConstraint': session.region_name})
+bucket = s3.create_bucket(Bucket='rdvideoanalyzervideos')
+bucket = s3.create_bucket(Bucket='rdvideoanalyzervideos', LocationConstraint=session.region_name)
+bucket = s3.create_bucket(Bucket='rdvideoanalyzervideos')
+bucket = s3.create_bucket(Bucket='rdvideoanalyzervideos', CreateBucketConfiguration={'LocationConstraint': session.region_name})
 from pathlib import Path
-get_ipython().run_line_magic('ls', '/Users/rnorwood/Downloads/*.mp4')
-pathname = '~/Downloads/Blurry Video Of People Working.mp4'
+get_ipython().run_line_magic('ls', '/Users/robertdahlborg/Downloads/*.mp4')
+pathname = '~/Downloads/VideoTrimmed.mp4'
 path = Path(pathname).expanduser().resolve()
 print(path)
 bucket.upload_file(str(path), str(path.name))
